@@ -1,0 +1,107 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "networkSecurityGroups_labo0708_nsg_name": {
+            "defaultValue": "labo0708-nsg",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2023-05-01",
+            "name": "[parameters('networkSecurityGroups_labo0708_nsg_name')]",
+            "location": "australiaeast",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "SSH",
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroups_labo0708_nsg_name'), 'SSH')]",
+                        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Deny",
+                            "priority": 300,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "IpHelmo",
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroups_labo0708_nsg_name'), 'IpHelmo')]",
+                        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+                        "properties": {
+                            "description": "IPHELMO",
+                            "protocol": "TCP",
+                            "sourcePortRange": "300",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "192.168.0.2",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 110,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2023-05-01",
+            "name": "[concat(parameters('networkSecurityGroups_labo0708_nsg_name'), '/IpHelmo')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_labo0708_nsg_name'))]"
+            ],
+            "properties": {
+                "description": "IPHELMO",
+                "protocol": "TCP",
+                "sourcePortRange": "300",
+                "destinationPortRange": "22",
+                "sourceAddressPrefix": "192.168.0.2",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 110,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2023-05-01",
+            "name": "[concat(parameters('networkSecurityGroups_labo0708_nsg_name'), '/SSH')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_labo0708_nsg_name'))]"
+            ],
+            "properties": {
+                "protocol": "TCP",
+                "sourcePortRange": "*",
+                "destinationPortRange": "22",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Deny",
+                "priority": 300,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        }
+    ]
+}
